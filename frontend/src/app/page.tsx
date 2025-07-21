@@ -1,89 +1,48 @@
-import Link from 'next/link';
+import DashboardLayout from '@/components/layout/DashboardLayout';
+import DashboardCard from '@/components/dashboard/DashboardCard';
+import { Users, BarChart2, DollarSign, Activity } from 'lucide-react';
+import TrafficLineChart from '@/components/charts/TrafficLineChart';
 
-export default function HomePage() {
+const stats = [
+  {
+    icon: <Users size={20} />, title: '총 사용자', value: 1280, subtext: '이번 달 +120'
+  },
+  {
+    icon: <BarChart2 size={20} />, title: '방문 수', value: '24,500', subtext: '이번 주 +2.1%'
+  },
+  {
+    icon: <DollarSign size={20} />, title: '매출', value: '₩3,200,000', subtext: '이번 달 +5.4%'
+  },
+  {
+    icon: <Activity size={20} />, title: '서버 상태', value: '정상', subtext: '모든 서비스 정상'
+  },
+];
+
+export default function DashboardPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
-          풀스택 프로젝트에 오신 것을 환영합니다
-        </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          Express API + Next.js 14로 구축된 현대적인 웹 애플리케이션
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">🚀 백엔드 API</h3>
-              <p className="card-description">
-                Express.js + TypeScript + Prisma ORM
-              </p>
-            </div>
-            <div className="card-content">
-              <ul className="text-sm text-gray-600 space-y-2">
-                <li>• RESTful API 설계</li>
-                <li>• JWT 인증 시스템</li>
-                <li>• Redis 캐싱</li>
-                <li>• Swagger 문서화</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">⚛️ 프론트엔드</h3>
-              <p className="card-description">
-                Next.js 14 + React 18 + TypeScript
-              </p>
-            </div>
-            <div className="card-content">
-              <ul className="text-sm text-gray-600 space-y-2">
-                <li>• App Router 구조</li>
-                <li>• Tailwind CSS 스타일링</li>
-                <li>• Zustand 상태 관리</li>
-                <li>• React Query 데이터 페칭</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">🛠️ 개발 도구</h3>
-              <p className="card-description">
-                현대적인 개발 환경
-              </p>
-            </div>
-            <div className="card-content">
-              <ul className="text-sm text-gray-600 space-y-2">
-                <li>• TypeScript 엄격 모드</li>
-                <li>• ESLint + Prettier</li>
-                <li>• Jest 테스트</li>
-                <li>• Docker 컨테이너화</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-12 space-x-4">
-          <Link 
-            href="/dashboard" 
-            className="btn btn-primary"
-          >
-            대시보드 보기
-          </Link>
-          <Link 
-            href="/auth/login" 
-            className="btn btn-outline"
-          >
-            로그인
-          </Link>
-        </div>
-
-        <div className="mt-8 text-sm text-gray-500">
-          <p>API 문서: <a href="http://localhost:3001/api-docs" className="text-blue-600 hover:underline">http://localhost:3001/api-docs</a></p>
-          <p>헬스 체크: <a href="http://localhost:3001/health" className="text-blue-600 hover:underline">http://localhost:3001/health</a></p>
-        </div>
+    <DashboardLayout>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {stats.map((stat) => (
+          <DashboardCard key={stat.title} {...stat} />
+        ))}
       </div>
-    </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <section className="card p-6 min-h-[240px] flex flex-col">
+          <h2 className="text-lg font-semibold mb-2">트래픽 추이</h2>
+          <div className="flex-1 flex items-center justify-center text-muted-foreground">
+            <TrafficLineChart />
+          </div>
+        </section>
+        <section className="card p-6 min-h-[240px] flex flex-col">
+          <h2 className="text-lg font-semibold mb-2">최근 가입자</h2>
+          <ul className="flex-1 flex flex-col gap-2 text-sm">
+            <li className="flex justify-between"><span>홍길동</span><span>2024-06-01</span></li>
+            <li className="flex justify-between"><span>김철수</span><span>2024-06-02</span></li>
+            <li className="flex justify-between"><span>이영희</span><span>2024-06-03</span></li>
+            <li className="flex justify-between text-muted-foreground">+ 더보기</li>
+          </ul>
+        </section>
+      </div>
+    </DashboardLayout>
   );
 } 

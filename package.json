@@ -1,0 +1,39 @@
+{
+  "name": "fullstack-project",
+  "version": "1.0.0",
+  "description": "풀스택 서버 구축 프로젝트 - Express API + Next.js Frontend",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "lint": "npm run lint:backend && npm run lint:frontend",
+    "lint:backend": "cd backend && npm run lint",
+    "lint:frontend": "cd frontend && npm run lint",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build",
+    "db:up": "cd backend/docker && docker-compose -f docker-compose.db.yml -p fullstack up -d",
+    "db:down": "cd backend/docker && docker-compose -f docker-compose.db.yml -p fullstack down",
+    "db:logs": "cd backend/docker && docker-compose -f docker-compose.db.yml -p fullstack logs -f",
+    "db:reset": "cd backend/docker && docker-compose -f docker-compose.db.yml -p fullstack down -v && docker-compose -f docker-compose.db.yml -p fullstack up -d",
+    "db:status": "cd backend/docker && docker-compose -f docker-compose.db.yml -p fullstack ps"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+} 

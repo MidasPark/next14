@@ -1,0 +1,97 @@
+version: '3.8'
+
+name: fullstack
+
+services:
+  # PostgreSQL 데이터베이스
+  postgres:
+    image: postgres:15-alpine
+    platform: linux/arm64/v8
+    container_name: fullstack-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: fullstack_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - db-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fullstack_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis 캐시
+  redis:
+    image: redis:7-alpine
+    platform: linux/arm64/v8
+    container_name: fullstack-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass redis123
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - db-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # pgAdmin (선택사항 - 데이터베이스 관리 도구)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    platform: linux/arm64/v8
+    container_name: fullstack-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - db-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Redis Commander는 ARM64를 지원하지 않아 제거
+  # 대신 redis-cli를 사용하거나 다른 ARM64 호환 도구 사용
+  # redis-commander:
+  #   image: rediscommander/redis-commander:latest
+  #   platform: linux/arm64/v8
+  #   container_name: fullstack-redis-commander
+  #   restart: unless-stopped
+  #   environment:
+  #     REDIS_HOSTS: local:redis:6379:0:redis123
+  #   ports:
+  #     - "8081:8081"
+  #   networks:
+  #     - db-network
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  db-network:
+    driver: bridge 

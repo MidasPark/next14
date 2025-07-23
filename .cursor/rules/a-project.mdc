@@ -1,0 +1,123 @@
+---
+alwaysApply: true
+---
+
+# 프로젝트 기본 규칙
+
+## 환경 변수 접근 규칙
+- process.env 접근 시 항상 대괄호 표기법(process.env['KEY'])을 사용한다. (예: process.env['NODE_ENV'])
+
+## 프로젝트 개요
+- **목적**: 풀스택 서버 구축
+- **아키텍처**: 분리형 풀스택 (Express API Server + Next.js Frontend)
+- **평가 기준**: 기능 완성도, 코드 품질, 테스트 커버리지, 배포 준비성
+
+## 글로벌 규칙
+- 모든 도커 관련 파일은 각 도메인 서비스 루트 폴더 말고 docker 폴더에 작성합니다.
+- 디렉토리 이름은 소문자와 대시를 사용합니다(예: components/auth-wizard)
+- /backend 폴더를 수정할 경우 /.cursor/rules/backend 폴더안에 있는 룰을 확인한다
+- /frontend 폴더를 수정할 경우 /.cursor/rules/frontend 폴더안에 있는 룰을 확인한다
+
+## 기술 스택 표준
+
+### Backend (Express + TypeScript)
+- **Runtime**: Node.js 18+ LTS
+- **Framework**: Express.js 4.18+
+- **언어**: TypeScript 5.x (strict mode)
+- **데이터베이스**: PostgreSQL + Prisma ORM 또는 MySQL + Prisma ORM. 둘다 허용되는 형태의 ORM 작성 필수
+- **캐싱**: Redis
+- **인증**: JWT + bcrypt
+- **검증**: Zod
+- **테스트**: Jest + Supertest
+- **문서화**: Swagger/OpenAPI
+
+### Frontend (Next.js + React)
+- **Framework**: Next.js 14 (App Router)
+- **UI**: React 18 + TypeScript
+- **스타일링**: Tailwind CSS + shadcn/ui
+- **상태관리**: Zustand + React Query
+- **폼 관리**: React Hook Form + Zod
+- **차트**: Chart.js + react-chartjs-2
+- **테스트**: Jest + Testing Library + Playwright
+
+## 폴더 구조 (모노레포 형태)
+project-root/
+├── backend/ # Express API 서버
+│ ├── src/
+│ │ ├── controllers/ # API 컨트롤러
+│ │ ├── services/ # 비즈니스 로직
+│ │ ├── models/ # 데이터 모델 (Prisma)
+│ │ ├── middleware/ # Express 미들웨어
+│ │ ├── routes/ # API 라우팅
+│ │ ├── utils/ # 유틸리티 함수
+│ │ ├── types/ # TypeScript 타입
+│ │ ├── config/ # 설정 파일
+│ │ └── app.ts # Express 앱 초기화
+│ ├── tests/ # 백엔드 테스트
+│ ├── prisma/ # 데이터베이스 스키마
+│ ├── docker/ # Docker 설정
+│ └── package.json
+├── frontend/ # Next.js 프론트엔드
+│ ├── src/
+│ │ ├── app/ # App Router (Next.js 14)
+│ │ │ ├── (dashboard)/ # 대시보드 라우트 그룹
+│ │ │ │ ├── analytics/
+│ │ │ │ ├── tasks/
+│ │ │ │ ├── settings/
+│ │ │ │ └── layout.tsx
+│ │ │ ├── auth/ # 인증 페이지
+│ │ │ ├── globals.css
+│ │ │ ├── layout.tsx
+│ │ │ └── page.tsx
+│ │ ├── components/
+│ │ │ ├── ui/ # shadcn/ui 기본 컴포넌트
+│ │ │ ├── layout/ # 레이아웃 컴포넌트
+│ │ │ ├── dashboard/ # 대시보드 특화 컴포넌트
+│ │ │ ├── charts/ # 차트 컴포넌트
+│ │ │ └── forms/ # 폼 컴포넌트
+│ │ ├── lib/
+│ │ │ ├── api.ts # API 클라이언트
+│ │ │ ├── auth.ts # 인증 로직
+│ │ │ ├── utils.ts # 유틸리티
+│ │ │ └── validations.ts # Zod 스키마
+│ │ ├── hooks/ # 커스텀 훅
+│ │ ├── store/ # Zustand 스토어
+│ │ └── types/ # TypeScript 타입
+│ │ └── docker # Docker 설정
+│ ├── public/ # 정적 파일
+│ └── package.json
+├── shared/ # 공통 타입 및 유틸
+│ ├── types/
+│ └── utils/
+└── README.md
+
+
+## 코딩 규칙 및 패턴
+
+### Backend API 설계
+- **RESTful 원칙**: 리소스 기반 URL, HTTP 메서드 의미론적 사용
+- **응답 형식 통일**:
+  - 공통된 응답 형식 인터페이스를 사용
+- **에러 처리**:
+  - 계층별 에러 핸들링 (Validation → Business → System)
+  - 에러 코드 통일성 유지
+  - 에러 메시지 번역 처리
+- **문서화**:
+  - Swagger/OpenAPI 문서 자동 생성
+  - 문서 유지보수 자동화
+- **보안**:
+  - 인증 및 권한 검증 미들웨어 적용  - 민감 데이터 암호화 처리. 민감 데이터는 데이터베이스에 저장하지 않고, 메모리에 저장하는 방식으로 처리. 메모리에 저장하는 방식은 데이터베이스에 저장하는 방식과 동일한 방식으로 처리.
+  - 민감 데이터 통신은 TLS 1.2 이상 프로토콜 사용.
+- **데이터베이스**: Prisma 트랜잭션, 인덱싱 최적화. 데이터베이스 스키마는 데이터베이스 테이블 구조를 따르며, 데이터베이스 테이블 구조는 데이터베이스 스키마를 따른다.
+
+### Frontend 컴포넌트 설계
+- **컴포넌트 구조**: Props Interface → Component → Export
+- **스타일링**: Tailwind utility classes + cva for variants
+- **데이터 페칭**: React Query로 캐싱, 에러 처리, 로딩 상태 관리
+- **상태 관리**: Zustand로 상태 관리
+- **폼 관리**: React Hook Form + Zod
+- **차트**: Chart.js + react-chartjs-2
+- **테스트**: Jest + Testing Library + Playwright
+- **문서화**: Swagger/OpenAPI 문서 자동 생성
+- **보안**: 인증 및 권한 검증 미들웨어 적용
+

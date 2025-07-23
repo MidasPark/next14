@@ -1,0 +1,287 @@
+---
+description: TypeScript coding standards and best practices for modern web development
+globs: **/*.ts, **/*.tsx, **/*.d.ts, **/*.js
+---
+
+# TypeScript & Javascript 코드 스타일 (에어비앤비 기반)
+
+- 세미콜론(;)을 항상 사용한다.
+- 문자열은 홑따옴표('), JSX는 쌍따옴표(")를 사용한다.
+- 객체 리터럴의 키 정렬은 강제하지 않는다.
+- 한 줄 최대 120자 제한을 권장한다.
+- 콘솔 사용을 허용한다.
+- 멀티라인 객체/배열에는 항상 trailing comma(,)를 붙인다.
+- 함수 선언은 화살표 함수 또는 function 키워드 모두 허용한다.
+- 타입/인터페이스는 PascalCase로 작성한다.
+- 변수/함수명은 camelCase로 작성한다.
+
+---
+
+## 1. 세미콜론(;) 사용
+```ts
+const a = 1;
+```
+
+## 2. 문자열 홑따옴표, JSX 쌍따옴표
+```ts
+const name = '홍길동';
+const element = <div className="box">Hello</div>;
+```
+
+## 3. 객체 리터럴 키 정렬 강제하지 않음
+```ts
+const obj = {
+  b: 2,
+  a: 1,
+};
+```
+
+## 4. 한 줄 최대 120자 권장
+```ts
+// 120자 이하로 작성
+const msg = '이 문자열은 120자 이하로 작성되어야 하며, 너무 길어지면 가독성이 떨어지므로 줄바꿈을 권장합니다.';
+```
+
+## 5. 콘솔 사용 허용
+```ts
+console.log('디버그');
+```
+
+## 6. 멀티라인 trailing comma
+```ts
+const arr = [
+  1,
+  2,
+  3,
+];
+const obj = {
+  a: 1,
+  b: 2,
+};
+```
+
+## 7. 함수 선언 방식
+```ts
+function add(a: number, b: number): number {
+  return a + b;
+}
+const add2 = (a: number, b: number): number => a + b;
+```
+
+## 8. 타입/인터페이스 PascalCase, 변수/함수 camelCase
+```ts
+interface UserProfile {
+  id: number;
+  name: string;
+}
+const userProfile: UserProfile = { id: 1, name: '홍길동' };
+function getUserName(user: UserProfile): string {
+  return user.name;
+}
+```
+
+---
+
+# TypeScript 베스트 프랙티스
+
+## 타입 시스템
+- 객체 정의에는 타입보다 인터페이스를 선호한다
+- 유니온, 인터섹션, 매핑된 타입에는 type을 사용한다
+- `any` 사용을 피하고, 알 수 없는 타입에는 `unknown`을 사용한다
+- 엄격한 TypeScript 설정을 사용한다
+- TypeScript의 내장 유틸리티 타입을 활용한다
+- 재사용 가능한 타입 패턴에는 제네릭을 사용한다
+
+```ts
+interface User {
+  id: number;
+  name: string;
+}
+
+type UserStatus = 'active' | 'inactive' | 'pending';
+
+type ApiResponse<T> = {
+  data: T;
+  status: number;
+};
+```
+
+## 네이밍 컨벤션
+- 타입명과 인터페이스는 PascalCase를 사용한다
+- 변수와 함수는 camelCase를 사용한다
+- 상수는 UPPER_CASE를 사용한다
+- 보조동사를 포함한 설명적인 이름을 사용한다 (예: isLoading, hasError)
+- React props 인터페이스에는 'Props' 접두사를 사용한다 (예: ButtonProps)
+
+```ts
+interface ButtonProps {
+  isLoading: boolean;
+  hasError: boolean;
+  onClick: () => void;
+}
+
+const API_BASE_URL = 'https://api.example.com';
+const MAX_RETRY_COUNT = 3;
+
+function handleUserLogin() {
+  // ...
+}
+```
+
+## 코드 구성
+- 타입 정의는 사용하는 곳과 가까이 유지한다
+- 공유되는 타입과 인터페이스는 전용 타입 파일에서 내보낸다
+- 내보내기 정리를 위해 barrel exports (index.ts)를 사용한다
+- 공유 타입은 `types` 디렉토리에 배치한다
+- 컴포넌트 props는 해당 컴포넌트와 함께 배치한다
+
+```ts
+// components/Button/Button.tsx
+interface ButtonProps {
+  variant: 'primary' | 'secondary';
+  children: React.ReactNode;
+}
+
+export function Button({ variant, children }: ButtonProps) {
+  // ...
+}
+
+// types/index.ts
+export interface ApiResponse<T> {
+  data: T;
+  status: number;
+}
+```
+
+## 함수
+- 공개 함수에는 명시적 반환 타입을 사용한다
+- 콜백과 메서드에는 화살표 함수를 사용한다
+- 커스텀 에러 타입으로 적절한 에러 처리를 구현한다
+- 복잡한 타입 시나리오에는 함수 오버로드를 사용한다
+- Promise보다 async/await를 선호한다
+
+```ts
+async function fetchUserData(id: number): Promise<User> {
+  try {
+    const response = await api.get(`/users/${id}`);
+    return response.data;
+  } catch (error) {
+    throw new ApiError('사용자 데이터를 가져오는데 실패했습니다', error);
+  }
+}
+
+const handleClick = (event: React.MouseEvent): void => {
+  console.log('클릭됨:', event.target);
+};
+```
+
+## 베스트 프랙티스
+- tsconfig.json에서 strict 모드를 활성화한다
+- 불변 속성에는 readonly를 사용한다
+- 타입 안전성을 위해 discriminated unions를 활용한다
+- 런타임 타입 검사에는 타입 가드를 사용한다
+- 적절한 null 체크를 구현한다
+- 필요하지 않으면 타입 단언을 피한다
+
+```ts
+interface SuccessResult {
+  type: 'success';
+  data: User;
+}
+
+interface ErrorResult {
+  type: 'error';
+  message: string;
+}
+
+type Result = SuccessResult | ErrorResult;
+
+function isSuccess(result: Result): result is SuccessResult {
+  return result.type === 'success';
+}
+
+function processResult(result: Result): void {
+  if (isSuccess(result)) {
+    console.log(result.data.name);
+  } else {
+    console.error(result.message);
+  }
+}
+```
+
+## 에러 처리
+- 도메인별 에러를 위한 커스텀 에러 타입을 생성한다
+- 실패할 수 있는 작업에는 Result 타입을 사용한다
+- 적절한 에러 바운더리를 구현한다
+- 타입이 지정된 catch 절로 try-catch 블록을 사용한다
+- Promise 거부를 적절히 처리한다
+
+```ts
+class ApiError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number,
+    public originalError?: unknown
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+async function safeApiCall<T>(apiCall: () => Promise<T>): Promise<Result<T>> {
+  try {
+    const result = await apiCall();
+    return { type: 'success', data: result };
+  } catch (error) {
+    return { 
+      type: 'error', 
+      message: error instanceof Error ? error.message : '알 수 없는 에러' 
+    };
+  }
+}
+```
+
+## 패턴
+- 복잡한 객체 생성에는 Builder 패턴을 사용한다
+- 데이터 접근에는 Repository 패턴을 구현한다
+- 객체 생성에는 Factory 패턴을 사용한다
+- 의존성 주입을 활용한다
+- 캡슐화를 위해 Module 패턴을 사용한다
+
+```ts
+// Builder 패턴
+class UserBuilder {
+  private user: Partial<User> = {};
+
+  withId(id: number): UserBuilder {
+    this.user.id = id;
+    return this;
+  }
+
+  withName(name: string): UserBuilder {
+    this.user.name = name;
+    return this;
+  }
+
+  build(): User {
+    if (!this.user.id || !this.user.name) {
+      throw new Error('필수 필드가 누락되었습니다');
+    }
+    return this.user as User;
+  }
+}
+
+// Repository 패턴
+interface UserRepository {
+  findById(id: number): Promise<User | null>;
+  save(user: User): Promise<User>;
+}
+
+class UserService {
+  constructor(private userRepository: UserRepository) {}
+
+  async getUser(id: number): Promise<User | null> {
+    return this.userRepository.findById(id);
+  }
+}
+``` 

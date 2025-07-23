@@ -1,0 +1,115 @@
+---
+description: Gitflow Workflow Rules. These rules should be applied when performing git operations.
+---
+
+# Gitflow 워크플로우 규칙
+
+## 메인 브랜치
+
+### main (또는 master)
+- 프로덕션 준비된 코드 포함
+- main에 직접 커밋하지 않음
+- 다음에서만 머지 허용:
+  - hotfix/* 브랜치
+  - release/* 브랜치
+- 각 머지 후 버전 번호로 태그해야 함
+
+### develop
+- 메인 개발 브랜치
+- 최신 전달된 개발 변경사항 포함
+- 기능 브랜치의 소스 브랜치
+- develop에 직접 커밋하지 않음
+
+## 지원 브랜치
+
+### feature/*
+- 브랜치 출처: develop
+- 머지 대상: develop
+- 명명 규칙: feature/[이슈-id]-설명적-이름
+- 예시: feature/123-user-authentication
+- PR 생성 전 develop과 최신 상태여야 함
+- 머지 후 삭제
+
+### release/*
+- 브랜치 출처: develop
+- 머지 대상:
+  - main
+  - develop
+- 명명 규칙: release/vX.Y.Z
+- 예시: release/v1.2.0
+- 버그 수정, 문서화, 릴리스 지향 작업만
+- 새 기능 없음
+- 머지 후 삭제
+
+### hotfix/*
+- 브랜치 출처: main
+- 머지 대상:
+  - main
+  - develop
+- 명명 규칙: hotfix/vX.Y.Z
+- 예시: hotfix/v1.2.1
+- 긴급 프로덕션 수정만
+- 머지 후 삭제
+
+## 커밋 메시지
+
+- 형식: `type(scope): description`
+- 타입:
+  - feat: 새 기능
+  - fix: 버그 수정
+  - docs: 문서 변경
+  - style: 포맷팅, 누락된 세미콜론 등
+  - refactor: 코드 리팩토링
+  - test: 테스트 추가
+  - chore: 유지보수 작업
+
+## 버전 관리
+
+### 시맨틱 버저닝
+- MAJOR 버전: 호환되지 않는 API 변경
+- MINOR 버전: 이전 버전과 호환되는 기능
+- PATCH 버전: 이전 버전과 호환되는 버그 수정
+
+## Pull Request 규칙
+
+1. 모든 변경사항은 Pull Request를 거쳐야 함
+2. 필수 승인: 최소 1명
+3. CI 검사 통과해야 함
+4. 보호된 브랜치(main, develop)에 직접 커밋 금지
+5. 머지 전 브랜치가 최신 상태여야 함
+6. 머지 후 브랜치 삭제
+
+## 브랜치 보호 규칙
+
+### main & develop
+- Pull Request 리뷰 필수
+- 상태 검사 통과 필수
+- 브랜치가 최신 상태여야 함
+- 제한사항에 관리자 포함
+- 강제 푸시 금지
+- 삭제 금지
+
+## 릴리스 프로세스
+
+1. develop에서 릴리스 브랜치 생성
+2. 버전 번호 증가
+3. 릴리스 특정 이슈 수정
+4. main으로 PR 생성
+5. main 머지 후:
+   - 릴리스 태그
+   - develop으로 머지 백
+   - 릴리스 브랜치 삭제
+
+## 핫픽스 프로세스
+
+1. main에서 핫픽스 브랜치 생성
+2. 이슈 수정
+3. 패치 버전 증가
+4. main으로 PR 생성
+5. main 머지 후:
+   - 릴리스 태그
+   - develop으로 머지 백
+   - 핫픽스 브랜치 삭제 
+   - Tag release
+   - Merge back to develop
+   - Delete hotfix branch 

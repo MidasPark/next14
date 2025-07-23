@@ -1,0 +1,82 @@
+---
+description: React best practices and patterns for modern web applications
+globs: frontend/**/*.tsx, frontend/**/*.jsx, frontend/components/**/*
+---
+
+# React 베스트 프랙티스
+
+## 컴포넌트 구조
+- 클래스 컴포넌트보다 함수형 컴포넌트 사용
+- 컴포넌트를 작고 집중적으로 유지
+- 재사용 가능한 로직을 커스텀 훅으로 추출
+- 상속보다 컴포지션 사용
+- TypeScript로 적절한 prop 타입 구현
+- 큰 컴포넌트를 작고 집중적인 컴포넌트로 분할
+
+## 훅
+- 훅의 규칙을 따름
+- 재사용 가능한 로직을 위한 커스텀 훅 사용
+- 훅을 집중적이고 단순하게 유지
+- useEffect에서 적절한 의존성 배열 사용
+- 필요시 useEffect에서 정리 구현
+- 중첩된 훅 피하기
+
+## 상태 관리
+- 로컬 컴포넌트 상태에는 useState 사용
+- 복잡한 상태 로직에는 useReducer 구현
+- 공유 상태에는 Context API 사용
+- 상태를 사용하는 곳과 가까이 유지
+- 적절한 상태 관리로 prop drilling 피하기
+- 필요할 때만 상태 관리 라이브러리 사용
+
+## 성능
+- 적절한 메모이제이션 구현 (useMemo, useCallback)
+- 비용이 높은 컴포넌트에는 React.memo 사용
+- 불필요한 리렌더링 피하기
+- 적절한 지연 로딩 구현
+- 리스트에서 적절한 key prop 사용
+- 렌더링 성능 프로파일링 및 최적화
+
+## 폼
+- 폼 입력에는 제어 컴포넌트 사용
+- 적절한 폼 검증 구현
+- 폼 제출 상태를 적절히 처리
+- 적절한 로딩 및 에러 상태 표시
+- 복잡한 폼에는 폼 라이브러리 사용
+- 폼에 대한 적절한 접근성 구현
+
+## 에러 처리
+- 에러 바운더리 구현
+- 비동기 에러를 적절히 처리
+- 사용자 친화적인 에러 메시지 표시
+- 적절한 폴백 UI 구현
+- 에러를 적절히 로깅
+- 엣지 케이스를 우아하게 처리
+
+## 테스트
+- 컴포넌트에 대한 단위 테스트 작성
+- 복잡한 플로우에 대한 통합 테스트 구현
+- React Testing Library 사용
+- 사용자 상호작용 테스트
+- 에러 시나리오 테스트
+- 적절한 목 데이터 구현
+
+## 접근성
+- 의미론적 HTML 요소 사용
+- 적절한 ARIA 속성 구현
+- 키보드 네비게이션 보장
+- 스크린 리더로 테스트
+- 포커스 관리 처리
+- 이미지에 대한 적절한 alt 텍스트 제공
+
+## 코드 구성
+- 관련 컴포넌트를 함께 그룹화
+- 적절한 파일 명명 규칙 사용
+- 적절한 디렉토리 구조 구현
+- 스타일을 컴포넌트와 가까이 유지
+- 적절한 import/export 사용
+- 복잡한 컴포넌트 로직 문서화 
+- Implement proper directory structure
+- Keep styles close to components
+- Use proper imports/exports
+- Document complex component logic 
